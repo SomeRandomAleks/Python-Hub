@@ -220,4 +220,4 @@ async def mute(ctx, member : discord.Member, *, reason):
 
 
 
-client.run('Nzk2MTk1OTk1Mjg0NDA2Mjky.X_UZTQ.FHbfeqzA_3ealncmUyRWIbY9gJA')
+client.run('')
