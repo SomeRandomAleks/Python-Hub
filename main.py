@@ -17,9 +17,11 @@ client.remove_command("help")
 async def on_ready():
 	print("Bot is ready")
 	await client.change_presence(activity=discord.Game("!help for all commands"))
-
+	embed = discord.Embed(description="Help us bump the server! By reacting to the 🔔 icon you will get pinged whenever it is time to bump\nReact again to not get bump notifications", color=0x1f4454)
+	msg = await client.get_channel(797342261507391488).send(embed=embed)
+	await msg.add_reaction("🔔")
 	while True:
-		await asyncio.sleep(14)
+		await asyncio.sleep(20)
 		with open('spam.txt', 'r+') as f:
 			f.truncate(0)
 
@@ -42,7 +44,7 @@ async def spam(message):
             await message.channel.send(embed=embed)
             await asyncio.sleep(30)
             await message.author.remove_roles(role)
-            em = discord.Embed(title=f"{message.author} has been unmuted", description=f"Reason was: Spam")
+            em = discord.Embed(title=f"{message.author} has been unmuted", description=f"Reason was: Spam", color=0x1f4454)
             em.set_thumbnail(url=message.author.avatar_url)
             em.set_footer(text=time.ctime())
             await message.channel.send(embed=em)
@@ -68,11 +70,27 @@ async def on_member_join(member):
 
 	await client.get_channel(796139098086703148).send(embed=em)
 
+bump_msg = ""
+
 @client.event
 async def on_member_remove(member):
 	guild_id = member.guild
 	channel = client.get_channel(804882935227744266)
 	await channel.edit(name=f"Member Count: {guild_id.member_count}")
+
+@client.listen('on_message')
+async def bump(message):
+	if "!d bump" in message.content:
+		if message.channel.id != 797342261507391488:
+			bump_msg = message.author
+			await message.delete()
+			return
+
+		else:
+			return
+
+	else:
+		return
 
 @client.listen('on_message')
 async def bumped(message):
@@ -88,8 +106,8 @@ async def bumped(message):
 					pass
 				else:
 					await asyncio.sleep(1)
-					await message.channel.purge(limit=3)
-					embed = discord.Embed(title="Bump Success", description=f"The server has been bumped! Next bump is in 2 hours\n", color=0x1f4454)
+					await message.delete()
+					embed = discord.Embed(title=f"Thanks {bump_msg}!", description=f"The server has been bumped! Next bump is in 2 hours\n", color=0x1f4454)
 					embed.set_thumbnail(url='https://cdn.discordapp.com/attachments/796182201976356875/806529281232601107/pandaemoji_1.png')
 					await message.channel.send(embed=embed)
 					await asyncio.sleep(7200)
@@ -118,19 +136,16 @@ async def disboard_different_channel(message):
 	else:
 		return
 
-
 @client.listen('on_message')
-async def bump(message):
-	if "!d bump" in message.content:
-		if message.channel.id != 797342261507391488:
-			await message.delete()
-			return
+async def not_verify(message):
+    if message.channel.id == 803826776970231888:
+        if message.author.id != 796195995284406292:
+            await message.delete()
+        else:
+            return
+    else:
+        return
 
-		else:
-			return
-
-	else:
-		return
 
 @client.command()
 async def verify(ctx):
@@ -138,7 +153,7 @@ async def verify(ctx):
 	if ctx.channel.id == 803826776970231888:
     
 		await msg.delete()
-		role = discord.utils.get(ctx.guild.roles, name="People")
+		role = discord.utils.get(ctx.guild.roles, name="Members")
 		await ctx.author.add_roles(role)
 		await ctx.send(f"Granted access for {ctx.author.mention}")
 	else:
@@ -149,7 +164,7 @@ async def verify(ctx):
 
 @client.event
 async def on_raw_reaction_add(payload):
-    if payload.message_id == 805827509269954571:
+    if payload.message_id == 806750309689982977:
         role = discord.utils.get(payload.member.guild.roles, name="Bump")
         await payload.member.add_roles(role)
     elif payload.message_id == 806561041726439484:
@@ -169,12 +184,13 @@ async def on_raw_reaction_add(payload):
         await client.get_guild(796139098086703145).create_text_channel(name, overwrites=overwrites, category=category)
         
         
+
     else:
         return
 
 @client.event
 async def on_raw_reaction_remove(payload):
-    if payload.message_id == 805827509269954571:
+    if payload.message_id == 806750309689982977:
         guild_id = payload.guild_id
         guild = client.get_guild(guild_id)
         role = discord.utils.get(guild.roles, name="Bump")
@@ -183,6 +199,8 @@ async def on_raw_reaction_remove(payload):
             await member.remove_roles(role)
         else:
             print("There is no role named Bump")
+        
+
         
 
 
