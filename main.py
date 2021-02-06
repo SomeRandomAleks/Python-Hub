@@ -65,7 +65,9 @@ client.load_extension('cogs.bump')
 
 @client.listen('on_message')
 async def user_bump(message):
-    if message.content == "!d bump":
+    if message.channel.id == 797342261507391488:
+        return
+    elif message.content == "!d bump":
         await message.delete()
     
 
@@ -189,4 +191,4 @@ async def mute(ctx, member : discord.Member, *, reason):
 
 
 
-client.run('')
+client.run('Nzk2MTk1OTk1Mjg0NDA2Mjky.X_UZTQ.eT6F-W7LKwZIrn8Ylf_NMh0f97c')
