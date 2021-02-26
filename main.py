@@ -22,12 +22,9 @@ client.remove_command("help")
 async def on_ready():
 	print("Bot is ready")
 	guild = client.get_guild(796139098086703145)
-	beginner = discord.utils.get(guild.emojis, name="Beginner")
-	intermediate = discord.utils.get(guild.emojis, name="Intermediate")
-	experienced = discord.utils.get(guild.emojis, name="Experienced")
-	await client.change_presence(activity=discord.Game("!help for all commands"))
-	embed = discord.Embed(title="Server", description=f"""h""", color=0xffee00)
-	
+	bot_dev = discord.utils.get(guild.channels, id=814981031236599838)
+	msg = f"Bot is up! Watching {len(guild.members)} members"
+	await client.get_channel(bot_dev.id).send(msg)
 	while True:
 	    await asyncio.sleep(17)
 	    with open('spam.txt', 'r+') as f:
