@@ -7,7 +7,7 @@ import keep_alive
 import time
 import datetime
 import threading
-from cogs.defs import *
+from cogs.resources import *
 
 intents = discord.Intents.all()
 intents.members = True
@@ -23,7 +23,7 @@ async def on_ready():
 	print("Bot is ready")
 	guild = client.get_guild(796139098086703145)
 	bot_dev = discord.utils.get(guild.channels, id=814981031236599838)
-	msg = f"Bot is up! Watching {len(guild.members)} members"
+	msg = f"Bot is up! Watching {len(guild.members)} members\nTime: **{current_time}**"
 	await client.get_channel(bot_dev.id).send(msg)
 	while True:
 	    await asyncio.sleep(17)
@@ -209,24 +209,6 @@ async def kick(ctx, member : discord.Member, *, reason=None):
 	await ctx.send(embed=embed)
 
 
-@client.command()
-@commands.has_any_role("Moderation")
-async def mutev(ctx, member: discord.Member=None, sec=1800):
-	if member == None:
-		await ctx.send(f"{ctx.author.mention}, you need to specify a member\n```e mutev <@member> <seconds>```")
-		return
-	else:
-		await member.edit(mute=True)
-		embed = discord.Embed(title=f"{ctx.author} server muted {member}", description=f"{member} has successfully been server muted\nThey can't talk in VC for {sec} seconds", color=0x1f4454)
-		embed.set_thumbnail(url=ctx.author.avatar_url)
-		await ctx.send(embed=embed)
-		await asyncio.sleep(int(sec))
-		await member.edit(mute=False)
-		em = discord.Embed(title=f"{member} has been unmuted", description=f"{member} can now talk in voice channels", color=0x1f4454)
-		em.set_thumbnail(url=ctx.author.avatar_url)
-		await ctx.send(embed=em)
-
-
 
 @client.command()
 @commands.has_permissions(ban_members=True)
@@ -273,7 +255,16 @@ async def unban(ctx, *, user=None):
 
 @client.command()
 async def help(ctx):
-    embed = discord.Embed(title="Commands", description="")
+    embed = discord.Embed(title="Commands", description=
+    """```!clear <#> - clears messages, aliases are !purge\n\n"
+    !mute <@member> <reason>- mutes the member\n\n
+    !unmute <@member> - unmutes a member\n\n
+    !kick <@member> <reason> - kicks the member\n\n
+    !ban <@member> <reason> - bans the member\n\n
+    !unban <@member> - unbans the member```""")
+    embed.set_thumbnail(url=python_hub)
+    embed.set_footer(text=f"{datetime.datetime.now()}")
+    await client.get_channel(814981031236599838).send(embed=embed)
 
 
 
